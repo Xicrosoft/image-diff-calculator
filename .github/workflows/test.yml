@@ -1,5 +1,7 @@
 # This workflow runs lint and test jobs separately on every push and pull request
 name: Lint and Test on PR
+permissions:
+  contents: read
 
 on:
   pull_request:
