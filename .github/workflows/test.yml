@@ -26,7 +26,7 @@ jobs:
           pip install pylint
       - name: Run pylint
         run: |
-          pylint image_diff_calculator.py interactive.py tests/*.py
+          pylint image_diff_calculator.py interactive.py tests/*.py --fail-under 5 --fail-on E
 
   test:
     name: Test (pytest & coverage)
