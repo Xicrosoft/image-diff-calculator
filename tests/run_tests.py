@@ -4,12 +4,12 @@ Test runner for Image Difference Calculator
 Provides easy access to run all tests with different configurations
 """
 
+import argparse
 import os
+import subprocess
 import sys
 import unittest
-import argparse
-import subprocess
-from pathlib import Path
+
 
 def run_unit_tests(verbose=True):
     """Run unit tests only"""
@@ -26,6 +26,7 @@ def run_unit_tests(verbose=True):
 
     return result.wasSuccessful()
 
+
 def run_integration_tests(verbose=True):
     """Run integration tests only"""
     print("\n🔧 Running Integration Tests...")
@@ -40,6 +41,7 @@ def run_integration_tests(verbose=True):
     result = runner.run(suite)
 
     return result.wasSuccessful()
+
 
 def run_all_tests(verbose=True):
     """Run all tests"""
@@ -63,6 +65,7 @@ def run_all_tests(verbose=True):
     print(f"Overall: {'✅ ALL TESTS PASSED' if overall_success else '❌ SOME TESTS FAILED'}")
 
     return overall_success
+
 
 def run_coverage_report():
     """Run tests with coverage report"""
@@ -97,6 +100,7 @@ def run_coverage_report():
         print("🔄 Running tests without coverage...")
         return run_all_tests()
 
+
 def run_specific_test(test_name, verbose=True):
     """Run a specific test method or class"""
     print(f"🎯 Running Specific Test: {test_name}")
@@ -112,6 +116,7 @@ def run_specific_test(test_name, verbose=True):
         print(f"❌ Error running test {test_name}: {e}")
         return False
 
+
 def check_test_environment():
     """Check if test environment is properly set up"""
     print("🔍 Checking Test Environment...")
@@ -123,7 +128,7 @@ def check_test_environment():
         print("❌ Test images directory not found. Creating test images...")
         try:
             subprocess.run([sys.executable, "create_test_images.py"],
-                         cwd=os.path.dirname(__file__), check=True)
+                           cwd=os.path.dirname(__file__), check=True)
             print("✅ Test images created successfully")
         except subprocess.CalledProcessError:
             print("❌ Failed to create test images")
@@ -150,6 +155,7 @@ def check_test_environment():
 
     print("\n✅ Test environment is ready!")
     return True
+
 
 def main():
     """Main function for test runner"""
@@ -191,6 +197,7 @@ def main():
 
     print(f"\n{'🎉 Tests completed successfully!' if success else '💥 Tests failed!'}")
     sys.exit(0 if success else 1)
+
 
 if __name__ == "__main__":
     main()

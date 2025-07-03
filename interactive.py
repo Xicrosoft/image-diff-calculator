@@ -9,15 +9,15 @@ For testing purposes only. Please review the code before using it in production.
 """
 
 import os
-import sys
 from pathlib import Path
-from typing import Dict, Optional, Any
+from typing import Dict, Any
+
 from image_diff_calculator import ImageDiffCalculator
 
 
 class InteractiveImageDiffCalculator:
     """Interactive image difference calculator"""
-    
+
     def __init__(self):
         self.calculator = ImageDiffCalculator()
         self.current_session: Dict[str, Any] = {
@@ -87,20 +87,20 @@ class InteractiveImageDiffCalculator:
         print("\n📁 Please enter image file paths:")
         print("Tip: You can drag files to the terminal or enter the full path")
         print()
-        
+
         self.current_session['image1_path'] = self.get_image_path("Please enter the first image path")
         print(f"✅ First image: {os.path.basename(self.current_session['image1_path'])}")
-        
+
         self.current_session['image2_path'] = self.get_image_path("Please enter the second image path")
         print(f"✅ Second image: {os.path.basename(self.current_session['image2_path'])}")
-    
+
     def calculate_all_methods(self):
         """Calculate difference values for all methods"""
         print("\n🔄 Calculating image differences...")
         print("-" * 40)
-        
+
         results = {}
-        
+
         for method in self.calculator.supported_methods:
             try:
                 print(f"Computing: {method.upper()}...", end=" ")
@@ -111,44 +111,44 @@ class InteractiveImageDiffCalculator:
                 )
                 results[method] = result
                 print("✅")
-                
+
             except Exception as e:
                 print(f"❌ Failed: {e}")
                 results[method] = None
-        
+
         self.current_session['results'] = results
         return results
-    
+
     def format_percentage(self, value: float) -> str:
         """Format percentage display"""
         if value is None:
             return "N/A"
         return f"{value * 100:.2f}%"
-    
+
     def format_value(self, value: float, decimal_places: int = 4) -> str:
         """Format numeric value display"""
         if value is None:
             return "N/A"
         return f"{value:.{decimal_places}f}"
-    
+
     def print_results(self):
         """Print calculation results"""
         if not self.current_session['results']:
             print("❌ No calculation results")
             return
-        
+
         print("\n" + "=" * 60)
         print("📊 Image Difference Calculation Results")
         print("=" * 60)
-        
+
         # Image information
         image1_path = self.current_session['image1_path']
         image2_path = self.current_session['image2_path']
-        
+
         if image1_path and image2_path:
             print(f"📸 Image 1: {os.path.basename(image1_path)}")
             print(f"📸 Image 2: {os.path.basename(image2_path)}")
-        
+
         # Get image size information
         first_result = None
         results = self.current_session['results']
@@ -157,19 +157,19 @@ class InteractiveImageDiffCalculator:
                 if result:
                     first_result = result
                     break
-        
+
         if first_result and 'image_size' in first_result:
             size = first_result['image_size']
             print(f"📏 Processed Size: {size[1]}×{size[0]} (Width×Height)")
-        
+
         print("\n" + "-" * 60)
         print("📈 Similarity Overview:")
         print("-" * 60)
-        
+
         # Similarity overview table
         print(f"{'Method':<15} {'Similarity':<12} {'Detail Value':<15} {'Description'}")
         print("-" * 60)
-        
+
         method_info = {
             'mse': ('MSE', 'mse', 'Smaller is more similar'),
             'ssim': ('SSIM', 'ssim', 'Larger is more similar'),
@@ -177,75 +177,78 @@ class InteractiveImageDiffCalculator:
             'pixel_diff': ('Pixel Diff', 'pixel_diff_ratio', 'Smaller is more similar'),
             'hash': ('Perceptual Hash', 'hash_distance', 'Smaller is more similar')
         }
-        
+
         results = self.current_session['results']
         if results:
             for method, result in results.items():
                 if result is None:
                     continue
-                    
+
                 method_name, detail_key, description = method_info[method]
                 similarity = self.format_percentage(result['similarity_ratio'])
                 detail_value = self.format_value(result.get(detail_key, 0))
-                
+
                 print(f"{method_name:<15} {similarity:<12} {detail_value:<15} {description}")
-        
+
         print("\n" + "-" * 60)
         print("📋 Detailed Results:")
         print("-" * 60)
-        
+
         # Detailed results
         results = self.current_session['results']
         if results:
             for method, result in results.items():
                 if result is None:
                     continue
-                    
+
                 method_name = method_info[method][0]
                 print(f"\n🔹 {method_name} ({method.upper()})")
                 print(f"   Similarity: {self.format_percentage(result['similarity_ratio'])}")
-                
+
                 if method == 'mse':
                     print(f"   MSE Value: {self.format_value(result['mse'], 2)}")
                     print("   Explanation: Mean Squared Error, smaller value indicates more similar images")
-                    
+
                 elif method == 'ssim':
                     print(f"   SSIM Value: {self.format_value(result['ssim'])}")
-                    print("   Explanation: Structural Similarity Index, range [0,1], larger value indicates more similar images")
-                    
+                    print(
+                        "   Explanation: Structural Similarity Index, range [0,1], larger value indicates more similar images")
+
                 elif method == 'histogram':
                     print(f"   Histogram Correlation: {self.format_value(result['histogram_correlation'])}")
-                    print("   Explanation: Color distribution similarity, range [0,1], larger value indicates more similar images")
-                    
+                    print(
+                        "   Explanation: Color distribution similarity, range [0,1], larger value indicates more similar images")
+
                 elif method == 'pixel_diff':
                     print(f"   Pixel Difference Ratio: {self.format_percentage(result['pixel_diff_ratio'])}")
                     print("   Explanation: Proportion of different pixels, smaller value indicates more similar images")
-                    
+
                 elif method == 'hash':
                     print(f"   Hash Distance: {self.format_value(result['hash_distance'])}")
-                    print("   Explanation: Perceptual hash Hamming distance, range [0,1], smaller value indicates more similar images")
-    
+                    print(
+                        "   Explanation: Perceptual hash Hamming distance, range [0,1], smaller value indicates more similar images")
+
     def print_similarity_summary(self):
         """Print similarity summary"""
         if not self.current_session['results']:
             return
-        
+
         similarities = []
         results = self.current_session['results']
         if results:
             for result in results.values():
                 if result and result['similarity_ratio'] is not None:
                     similarities.append(result['similarity_ratio'])
-        
+
         if not similarities:
             return
-        
+
         avg_similarity = sum(similarities) / len(similarities)
-        
+
         print("\n" + "🎯" + " Similarity Summary " + "🎯".rjust(42))
         print("-" * 60)
         print(f"Average Similarity: {self.format_percentage(avg_similarity)}")
-        
+
         if avg_similarity >= 0.9:
             level = "Very High 🟢"
         elif avg_similarity >= 0.7:
@@ -256,9 +259,9 @@ class InteractiveImageDiffCalculator:
             level = "Low 🔴"
         else:
             level = "Very Low ⚫"
-        
+
         print(f"Similarity Level: {level}")
-    
+
     def ask_for_visualization(self):
         """Ask whether to generate visualization"""
         print("\n" + "-" * 60)
@@ -270,18 +273,18 @@ class InteractiveImageDiffCalculator:
                 return False
             else:
                 print("Please enter y or n")
-    
+
     def generate_visualization(self):
         """Generate visualization"""
         try:
             timestamp = __import__('datetime').datetime.now().strftime("%Y%m%d_%H%M%S")
             output_path = f"diff_visualization_{timestamp}.png"
-            
+
             print(f"\n🎨 Generating visualization...")
-            
+
             image1_path = self.current_session['image1_path']
             image2_path = self.current_session['image2_path']
-            
+
             if image1_path and image2_path:
                 self.calculator.save_diff_visualization(
                     image1_path,
@@ -291,10 +294,10 @@ class InteractiveImageDiffCalculator:
                 print(f"✅ Visualization saved: {output_path}")
             else:
                 print("❌ Image paths incomplete")
-            
+
         except Exception as e:
             print(f"❌ Visualization generation failed: {e}")
-    
+
     def ask_continue(self) -> bool:
         """Ask whether to continue"""
         print("\n" + "-" * 60)
@@ -306,35 +309,35 @@ class InteractiveImageDiffCalculator:
                 return False
             else:
                 print("Please enter y or n")
-    
+
     def run(self):
         """Run interactive calculator"""
         self.print_welcome()
-        
+
         while True:
             try:
                 # Input image paths
                 self.input_image_paths()
-                
+
                 # Calculate all methods
                 self.calculate_all_methods()
-                
+
                 # Display results
                 self.print_results()
                 self.print_similarity_summary()
-                
+
                 # Visualization option
                 if self.ask_for_visualization():
                     self.generate_visualization()
-                
+
                 # Continue or not
                 if not self.ask_continue():
                     break
-                    
+
                 print("\n" + "=" * 60)
                 print("🔄 Starting New Comparison")
                 print("=" * 60)
-                
+
             except KeyboardInterrupt:
                 print("\n\n👋 Program exited")
                 break
@@ -342,7 +345,7 @@ class InteractiveImageDiffCalculator:
                 print(f"\n❌ Error occurred: {e}")
                 if not self.ask_continue():
                     break
-        
+
         print("\nThank you for using the Image Difference Ratio Calculator! 👋")
 
 

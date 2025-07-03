@@ -6,14 +6,15 @@ Tests all the core functionality of the ImageDiffCalculator class
 including different similarity calculation methods and edge cases.
 """
 
-import unittest
 import os
-import sys
-import numpy as np
-import cv2
-import tempfile
 import shutil
-from unittest.mock import patch, MagicMock
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
+
+import cv2
+import numpy as np
 
 # Add parent directory to path to import the module
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -265,19 +266,18 @@ class TestImageDiffCalculator(unittest.TestCase):
 
         # Mock matplotlib to avoid display issues
         with patch('matplotlib.pyplot.savefig') as mock_savefig, \
-             patch('matplotlib.pyplot.close') as mock_close, \
-             patch('matplotlib.pyplot.figure') as mock_figure, \
-             patch('matplotlib.pyplot.subplot') as mock_subplot, \
-             patch('matplotlib.pyplot.imshow') as mock_imshow, \
-             patch('matplotlib.pyplot.title') as mock_title, \
-             patch('matplotlib.pyplot.axis') as mock_axis, \
-             patch('matplotlib.pyplot.bar') as mock_bar, \
-             patch('matplotlib.pyplot.ylabel') as mock_ylabel, \
-             patch('matplotlib.pyplot.xticks') as mock_xticks, \
-             patch('matplotlib.pyplot.ylim') as mock_ylim, \
-             patch('matplotlib.pyplot.tight_layout') as mock_tight_layout, \
-             patch('builtins.print') as mock_print:
-
+                patch('matplotlib.pyplot.close') as mock_close, \
+                patch('matplotlib.pyplot.figure') as mock_figure, \
+                patch('matplotlib.pyplot.subplot') as mock_subplot, \
+                patch('matplotlib.pyplot.imshow') as mock_imshow, \
+                patch('matplotlib.pyplot.title') as mock_title, \
+                patch('matplotlib.pyplot.axis') as mock_axis, \
+                patch('matplotlib.pyplot.bar') as mock_bar, \
+                patch('matplotlib.pyplot.ylabel') as mock_ylabel, \
+                patch('matplotlib.pyplot.xticks') as mock_xticks, \
+                patch('matplotlib.pyplot.ylim') as mock_ylim, \
+                patch('matplotlib.pyplot.tight_layout') as mock_tight_layout, \
+                patch('builtins.print') as mock_print:
             self.calculator.save_diff_visualization(
                 self.red_image,
                 self.blue_image,

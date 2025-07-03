@@ -3,9 +3,11 @@
 Create test images for the image difference calculator tests
 """
 
+import os
+
 import cv2
 import numpy as np
-import os
+
 
 def create_test_images():
     """Create various test images for testing purposes"""
@@ -35,7 +37,7 @@ def create_test_images():
     for i in range(0, 100, 10):
         for j in range(0, 100, 10):
             if (i // 10 + j // 10) % 2 == 0:
-                checkerboard[i:i+10, j:j+10] = [255, 255, 255]
+                checkerboard[i:i + 10, j:j + 10] = [255, 255, 255]
     cv2.imwrite(os.path.join(test_images_dir, "checkerboard_100x100.png"), checkerboard)
 
     # Create a different sized red image (50x50)
@@ -55,6 +57,7 @@ def create_test_images():
     cv2.imwrite(os.path.join(test_images_dir, "red_100x100_noisy.png"), red_noisy)
 
     print("Test images created successfully in", test_images_dir)
+
 
 if __name__ == "__main__":
     create_test_images()

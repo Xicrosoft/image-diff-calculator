@@ -5,19 +5,17 @@ Integration tests for Image Difference Calculator
 Tests the command-line interface and end-to-end functionality
 """
 
-import unittest
 import os
-import sys
-import subprocess
-import tempfile
 import shutil
-import json
-from unittest.mock import patch, MagicMock
+import subprocess
+import sys
+import tempfile
+import unittest
+from unittest.mock import patch
 
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from image_diff_calculator import main
 from interactive import InteractiveImageDiffCalculator
 
 
@@ -284,19 +282,18 @@ class TestEndToEndWorkflow(unittest.TestCase):
 
         # Mock matplotlib to avoid display issues
         with patch('matplotlib.pyplot.savefig') as mock_savefig, \
-             patch('matplotlib.pyplot.close'), \
-             patch('matplotlib.pyplot.figure'), \
-             patch('matplotlib.pyplot.subplot'), \
-             patch('matplotlib.pyplot.imshow'), \
-             patch('matplotlib.pyplot.title'), \
-             patch('matplotlib.pyplot.axis'), \
-             patch('matplotlib.pyplot.bar'), \
-             patch('matplotlib.pyplot.ylabel'), \
-             patch('matplotlib.pyplot.xticks'), \
-             patch('matplotlib.pyplot.ylim'), \
-             patch('matplotlib.pyplot.tight_layout'), \
-             patch('builtins.print'):
-
+                patch('matplotlib.pyplot.close'), \
+                patch('matplotlib.pyplot.figure'), \
+                patch('matplotlib.pyplot.subplot'), \
+                patch('matplotlib.pyplot.imshow'), \
+                patch('matplotlib.pyplot.title'), \
+                patch('matplotlib.pyplot.axis'), \
+                patch('matplotlib.pyplot.bar'), \
+                patch('matplotlib.pyplot.ylabel'), \
+                patch('matplotlib.pyplot.xticks'), \
+                patch('matplotlib.pyplot.ylim'), \
+                patch('matplotlib.pyplot.tight_layout'), \
+                patch('builtins.print'):
             calculator.save_diff_visualization(self.red_image, self.blue_image, output_path)
 
             # Verify visualization was attempted
@@ -369,7 +366,8 @@ if __name__ == '__main__':
     print(f"Tests run: {result.testsRun}")
     print(f"Failures: {len(result.failures)}")
     print(f"Errors: {len(result.errors)}")
-    print(f"Success rate: {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%")
+    print(
+        f"Success rate: {((result.testsRun - len(result.failures) - len(result.errors)) / result.testsRun * 100):.1f}%")
 
     # Exit with appropriate code
     sys.exit(0 if result.wasSuccessful() else 1)
